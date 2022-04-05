@@ -1,0 +1,65 @@
+let funcs = {
+
+    required(value, param) {
+        if (!param || (value != null));
+        return true;
+    },
+    isString(value, param) {
+        let type = typeof (value);
+        let ac = (type === "String") ? true : false;
+        return ac;
+    },
+    isNumber(value, param) {
+        let type = typeof (value);
+        let ac = (type === "Number") ? true : false;
+        return ac;
+    },
+    isBoolean(value, param) {
+        let type = typeof (value);
+        let ac = (type === "Boolean") ? true : false;
+        return ac;
+    },
+    minLength(value, param) {
+        let type = typeof (value);
+        let ac = (type === "String" && value.length >= param) ? true : false;
+        return ac;
+    },
+    maxLength(value, param) {
+        let type = typeof (value);
+        let ac = (type === "String" && value.length <= param) ? true : false;
+        return ac;
+    },
+    min(value, param) {
+        let type = typeof (value);
+        let ac = (type === "Number" && value >= param) ? true : false;
+        return ac;
+    },
+    max(value, param) {
+        let type = typeof (value);
+        let ac = (type === "Number" && value <= param) ? true : false;
+        return ac;
+    },
+    Email(value, param) {
+        let type = typeof (value);
+        let reg_exp_email = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        let ac = ((type === "String") && reg_exp_email.test(value)) ? true : false;
+        return ac;
+    }
+};
+let errors = [], result = true;
+for (let key in rules)
+    for (let innerKey in rules[key])
+        if (innerKey === "required" && !funcs[innerKey](data[key], rules[key][innerKey]))
+            errors.push({ field: key, value: data[key], rule: innerKey });
+for (let key in rules) {
+    let value = data[key]; // Если поле пустое, то ничего не проверять
+    if (value == null)
+        continue;
+    for (let innerKey in rules[key])
+        if (!funcs[innerKey](value, rules[key][innerKey]) && !errors.find(e => e.field === key))
+            errors.push({ field: key, value: value, rule: innerKey });
+}
+if (errors.length)
+    result = false;
+return { result, errors };
+}
